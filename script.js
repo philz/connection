@@ -1,15 +1,3 @@
-function updateBoxText() {
-    const wordInput = document.getElementById('wordInput');
-    const words = wordInput.value.split(' ');
-
-    // Update the text content of each box
-    const boxes = Array.from(document.querySelectorAll('.box'));
-    for (let i = 0; i < Math.min(boxes.length, words.length); i++) {
-        boxes[i].textContent = words[i];
-    }
-}
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const gridContainer = document.getElementById('gridContainer');
 
@@ -51,47 +39,35 @@ document.addEventListener('DOMContentLoaded', function () {
         e.target.classList.remove('hovered');
     }
 
-  function drop(e) {
-    e.preventDefault();
-    e.target.classList.remove('hovered');
+    function drop(e) {
+        e.preventDefault();
+        e.target.classList.remove('hovered');
 
-    // Get the dragged and target elements
-    const draggedElement = draggedBox;
-    const targetElement = e.target;
+        // Swap the positions of the dragged and target elements
+        const draggedIndex = Array.from(gridContainer.children).indexOf(draggedBox);
+        const targetIndex = Array.from(gridContainer.children).indexOf(e.target);
 
-    // Get the parent containers
-    const draggedContainer = draggedElement.parentNode;
-    const targetContainer = targetElement.parentNode;
+        if (draggedIndex !== -1 && targetIndex !== -1) {
+            gridContainer.insertBefore(draggedBox, e.target);
+            draggedBox.style.opacity = '1';
+        }
+    }
 
-    // Get the indices of the dragged and target elements within their containers
-    const draggedIndex = Array.from(draggedContainer.children).indexOf(draggedElement);
-    const targetIndex = Array.from(targetContainer.children).indexOf(targetElement);
+    const wordInput = document.getElementById('wordInput');
 
-    // Swap the positions of the dragged and target elements within their containers
-    draggedContainer.insertBefore(targetElement, draggedContainer.children[draggedIndex]);
-    targetContainer.insertBefore(draggedElement, targetContainer.children[targetIndex]);
+    wordInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            updateBoxText();
+        }
+    });
 
-    // Reset opacity
-    draggedBox.style.opacity = '1';
-  }
+    function updateBoxText() {
+        const words = wordInput.value.split(' ');
 
-	// Add an event listener for the "keydown" event on the input field
-	const wordInput = document.getElementById('wordInput');
-	wordInput.addEventListener('keydown', function (e) {
-		if (e.key === 'Enter') {
-			updateBoxText();
-		}
-	});
-
-	function updateBoxText() {
-		const words = wordInput.value.split(' ');
-
-		// Update the text content of each box
-		const boxes = Array.from(document.querySelectorAll('.box'));
-		for (let i = 0; i < Math.min(boxes.length, words.length); i++) {
-			boxes[i].textContent = words[i];
-		}
-	}
-
-
+        // Update the text content of each box with uppercase words
+        const boxes = Array.from(document.querySelectorAll('.box'));
+        for (let i = 0; i < Math.min(boxes.length, words.length); i++) {
+            boxes[i].textContent = words[i].toUpperCase();
+        }
+    }
 });
