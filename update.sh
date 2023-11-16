@@ -5,7 +5,8 @@ set -eu
 
 mkdir -p data
 
-for d in $(date -v +1d +%Y-%m-%d) $(date +%Y-%m-%d) $(date -v -1d +%Y-%m-%d); do
+# Note that OS X uses a BSD date which uses "-v +1d" to indicate "tomorrow"
+for d in $(date -d tomorrow +%Y-%m-%d) $(date +%Y-%m-%d) $(date -d yesterday +%Y-%m-%d); do
 	echo $d
 	if [[ ! -e "data/${d}.json" ]]; then
 		curl https://www.nytimes.com/svc/connections/v1/${d}.json >data/${d}.json
