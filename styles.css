@@ -32,8 +32,10 @@ body {
     border-radius: 10px;
     text-transform: uppercase;
     background-color: #efefe6;
+    transition: background-color 0.5s;
 }
 
 .box.selected {
-    background-color: #f39c12; /* Change to your preferred color */
+    background-color: #f39c12;
 }
+

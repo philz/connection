@@ -22,8 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         // Second box clicked, swap positions
         swapBoxes(selectedBox, clickedBox);
-        selectedBox.classList.remove('selected');
+        clickedBox.classList.add('selected');
+        let s = selectedBox;
         selectedBox = null;
+        setTimeout(() => {
+          s.classList.remove('selected');
+          clickedBox.classList.remove('selected');
+        }, 200);
       }
     }
   });
