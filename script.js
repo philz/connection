@@ -1,73 +1,54 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const gridContainer = document.getElementById('gridContainer');
+  const gridContainer = document.getElementById('gridContainer');
 
-    // Create 16 boxes dynamically
-    for (let i = 1; i <= 16; i++) {
-        const box = document.createElement('div');
-        box.classList.add('box');
-        box.textContent = i;
+  // Create 16 boxes dynamically
+  for (let i = 1; i <= 16; i++) {
+    const box = document.createElement('div');
+    box.classList.add('box');
+    box.textContent = i;
+    gridContainer.appendChild(box);
+  }
+  let selectedBox = null;
 
-        // Add drag and drop event listeners
-        box.draggable = true;
-        box.addEventListener('dragstart', dragStart);
-        box.addEventListener('dragover', dragOver);
-        box.addEventListener('dragenter', dragEnter);
-        box.addEventListener('dragleave', dragLeave);
-        box.addEventListener('drop', drop);
+     // Click event handler for grid boxes
+  gridContainer.addEventListener('click', function (e) {
+    const clickedBox = e.target.closest('.box');
 
-        gridContainer.appendChild(box);
+    if (clickedBox) {
+      if (!selectedBox) {
+        // First box clicked, highlight it
+        selectedBox = clickedBox;
+        selectedBox.classList.add('selected');
+      } else {
+        // Second box clicked, swap positions
+        swapBoxes(selectedBox, clickedBox);
+        selectedBox.classList.remove('selected');
+        selectedBox = null;
+      }
     }
+  });
 
-    // Drag and drop functions
-    let draggedBox;
+  function swapBoxes(box1, box2) {
+    const box1text = box1.innerText;
+    box1.innerText = box2.innerText;
+    box2.innerText = box1text;
+  }
 
-    function dragStart(e) {
-        draggedBox = e.target;
-        setTimeout(() => (e.target.style.opacity = '0.5'), 0);
-    }
+  const currentDate = new Date();
 
-    function dragOver(e) {
-        e.preventDefault();
-    }
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  const day = currentDate.getDate().toString().padStart(2, '0');
 
-    function dragEnter(e) {
-        e.preventDefault();
-        e.target.classList.add('hovered');
-    }
-
-    function dragLeave(e) {
-        e.target.classList.remove('hovered');
-    }
-
-    function drop(e) {
-        e.preventDefault();
-        e.target.classList.remove('hovered');
-
-        // Swap the positions of the dragged and target elements
-        const draggedIndex = Array.from(gridContainer.children).indexOf(draggedBox);
-        const targetIndex = Array.from(gridContainer.children).indexOf(e.target);
-
-        if (draggedIndex !== -1 && targetIndex !== -1) {
-            gridContainer.insertBefore(draggedBox, e.target);
-            draggedBox.style.opacity = '1';
-        }
-    }
-
-    const wordInput = document.getElementById('wordInput');
-
-    wordInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            updateBoxText();
-        }
-    });
-
-    function updateBoxText() {
-        const words = wordInput.value.split(' ');
-
-        // Update the text content of each box with uppercase words
-        const boxes = Array.from(document.querySelectorAll('.box'));
-        for (let i = 0; i < Math.min(boxes.length, words.length); i++) {
-            boxes[i].textContent = words[i].toUpperCase();
-        }
-    }
+  const formattedDate = `${year}-${month}-${day}`;
+  fetch(`data/${formattedDate}.json`)
+    .then(response => response.json())
+    .then( (data) => {
+      const words = data.startingGroups.flatMap(x => x);
+      const boxes = Array.from(document.querySelectorAll('.box'));
+      for (let i = 0; i < Math.min(boxes.length, words.length); i++) {
+        boxes[i].textContent = words[i].toUpperCase();
+      }
+    })
+    .catch(error => console.error('Error fetching data:', error));
 });
