@@ -13,7 +13,7 @@ body {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    grid-template-columns: repeat(4, minmax(5em, 1fr));
     grid-gap: 10px;
     max-width: 100%; /* Adjust to 100% to fit within the screen */
     overflow: auto; /* Add horizontal scroll if necessary */
@@ -21,16 +21,17 @@ body {
 
 .box {
     width: 100%;
-    min-width: 120px;
-    height: 120px;
-    color: #fff;
+    min-width: 5em;
+    height: 5em;
+    color: #000;
+    font-size: 1.3em;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border-radius: 10px;
     text-transform: uppercase;
-    background-color: green;
+    background-color: #efefe6;
 }
 
 .box.selected {
